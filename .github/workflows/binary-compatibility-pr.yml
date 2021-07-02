@@ -1,0 +1,46 @@
+name: Binary Compatibility - Pull Request
+
+on:
+#  pull_request:
+#    branches: [ main ]
+  push:
+    branches-ignore: [ main ]
+
+jobs:
+  japicmp:
+    name: Compare with `main`
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout `main`
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          path: assertj-core.main
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 11
+      - name: Cache Maven Repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+      - name: Build `main`
+        run: ./mvnw -V --no-transfer-progress -e -f assertj-core.main/pom.xml package -DskipTests
+      - name: Compare with `main`
+        run: >
+          ./mvnw -V --no-transfer-progress -e -Pjapicmp-branch package japicmp:cmp
+          -DskipTests
+          -Djapicmp.breakBuildOnBinaryIncompatibleModifications=true
+          -Djapicmp.oldVersion.basedir=assertj-core.main
+      - name: Print Result
+        run: cat target/japicmp/default-cli.diff
+      - name: Upload Reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: japicmp
+          path: target/japicmp
+          if-no-files-found: error
