@@ -3237,8 +3237,9 @@ public class Assertions implements InstanceOfAssertFactories {
    *
    * @since 2.5.0 / 3.5.0
    */
-  public static void useDefaultRepresentation() {
+  public static Object useDefaultRepresentation() {
     AbstractAssert.setCustomRepresentation(CONFIGURATION_PROVIDER.representation());
+    return null;
   }
 
 }

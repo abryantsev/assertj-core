@@ -3281,7 +3281,8 @@ public class BDDAssertions extends Assertions {
    *
    * @since 3.20.0
    */
-  public static void useDefaultRepresentation() {
+  public static Object useDefaultRepresentation() {
     Assertions.useDefaultRepresentation();
+    return null;
   }
 }
