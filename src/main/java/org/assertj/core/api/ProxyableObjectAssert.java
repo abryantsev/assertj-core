@@ -32,9 +32,4 @@ public class ProxyableObjectAssert<ACTUAL> extends AbstractObjectAssert<Proxyabl
   protected <ELEMENT> AbstractListAssert<?, List<? extends ELEMENT>, ELEMENT, ObjectAssert<ELEMENT>> newListAssertInstance(List<? extends ELEMENT> newActual) {
     return new ProxyableListAssert<>(newActual);
   }
-
-  @Override
-  protected <T> AbstractObjectAssert<?, T> newObjectAssert(T objectUnderTest) {
-    return new ProxyableObjectAssert<>(objectUnderTest);
-  }
 }

@@ -829,7 +829,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public AbstractObjectAssert<?, ?> extracting(String propertyOrField) {
-    return super.extracting(propertyOrField, this::newObjectAssert);
+    return super.extracting(propertyOrField, ObjectAssert::new);
   }
 
   /**
@@ -875,7 +875,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @CheckReturnValue
   public <ASSERT extends AbstractAssert<?, ?>> ASSERT extracting(String propertyOrField,
                                                                  InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-    return super.extracting(propertyOrField, this::newObjectAssert).asInstanceOf(assertFactory);
+    return super.extracting(propertyOrField, ObjectAssert::new).asInstanceOf(assertFactory);
   }
 
   /**
@@ -941,7 +941,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public <T> AbstractObjectAssert<?, T> extracting(Function<? super ACTUAL, T> extractor) {
-    return super.extracting(extractor, this::newObjectAssert);
+    return super.extracting(extractor, ObjectAssert::new);
   }
 
   /**
@@ -979,7 +979,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @CheckReturnValue
   public <T, ASSERT extends AbstractAssert<?, ?>> ASSERT extracting(Function<? super ACTUAL, T> extractor,
                                                                     InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-    return super.extracting(extractor, this::newObjectAssert).asInstanceOf(assertFactory);
+    return super.extracting(extractor, ObjectAssert::new).asInstanceOf(assertFactory);
   }
 
   /**
@@ -1163,11 +1163,6 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @Override
   public RecursiveComparisonAssert<?> usingRecursiveComparison(RecursiveComparisonConfiguration recursiveComparisonConfiguration) {
     return super.usingRecursiveComparison(recursiveComparisonConfiguration).withTypeComparators(comparatorByType);
-  }
-
-  // override for proxyable friendly AbstractObjectAssert
-  protected <T> AbstractObjectAssert<?, T> newObjectAssert(T objectUnderTest) {
-    return new ObjectAssert<>(objectUnderTest);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })

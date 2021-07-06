@@ -1645,7 +1645,7 @@ public abstract class AbstractMapAssert<SELF extends AbstractMapAssert<SELF, ACT
     Object extractedValue = actual.get(key);
     String extractedPropertyOrFieldDescription = extractedDescriptionOf(key);
     String description = mostRelevantDescription(info.description(), extractedPropertyOrFieldDescription);
-    return newObjectAssert(extractedValue).as(description);
+    return new ObjectAssert<>(extractedValue).as(description);
   }
 
   /**
@@ -1714,7 +1714,7 @@ public abstract class AbstractMapAssert<SELF extends AbstractMapAssert<SELF, ACT
     V extractedValue = actual.get(key);
     String extractedPropertyOrFieldDescription = extractedDescriptionOf(key);
     String description = mostRelevantDescription(info.description(), extractedPropertyOrFieldDescription);
-    return newObjectAssert(extractedValue).withAssertionState(myself).as(description);
+    return new ObjectAssert<>(extractedValue).withAssertionState(myself).as(description);
   }
 
   /**

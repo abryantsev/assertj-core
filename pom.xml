@@ -218,7 +218,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine>
+          <argLine>--illegal-access=permit -Xmx5048m -Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
             <exclude>org/assertj/core/osgi/**</exclude>
