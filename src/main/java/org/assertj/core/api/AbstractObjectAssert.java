@@ -20,19 +20,19 @@ import static org.assertj.core.extractor.Extractors.byName;
 import static org.assertj.core.extractor.Extractors.extractedDescriptionOf;
 import static org.assertj.core.internal.TypeComparators.defaultTypeComparators;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.assertj.core.description.Description;
 import org.assertj.core.groups.Tuple;
 import org.assertj.core.internal.TypeComparators;
 import org.assertj.core.util.CheckReturnValue;
 import org.assertj.core.util.introspection.IntrospectionError;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Base class for all implementations of assertions for {@link Object}s.
@@ -484,7 +484,9 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
 
   // lazy init TypeComparators
   protected TypeComparators getComparatorsByType() {
-    if (comparatorByType == null) comparatorByType = defaultTypeComparators();
+    if (comparatorByType == null) {
+        comparatorByType = defaultTypeComparators();
+    }
     return comparatorByType;
   }
 
@@ -540,7 +542,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public <T> SELF usingComparatorForFields(Comparator<T> comparator, String... propertiesOrFields) {
-    for (String propertyOrField : propertiesOrFields) {
+    for (final String propertyOrField : propertiesOrFields) {
       comparatorByPropertyOrField.put(propertyOrField, comparator);
     }
     return myself;
@@ -778,9 +780,9 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public AbstractListAssert<?, List<?>, Object, ObjectAssert<Object>> extracting(String... propertiesOrFields) {
-    Tuple values = byName(propertiesOrFields).apply(actual);
-    String extractedPropertiesOrFieldsDescription = extractedDescriptionOf(propertiesOrFields);
-    String description = mostRelevantDescription(info.description(), extractedPropertiesOrFieldsDescription);
+    final Tuple values = byName(propertiesOrFields).apply(actual);
+    final String extractedPropertiesOrFieldsDescription = extractedDescriptionOf(propertiesOrFields);
+    final String description = mostRelevantDescription(info.description(), extractedPropertiesOrFieldsDescription);
     return newListAssertInstance(values.toList()).withAssertionState(myself).as(description);
   }
 
@@ -832,7 +834,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public AbstractObjectAssert<?, ?> extracting(String propertyOrField) {
-    return super.extracting(propertyOrField, this::newObjectAssert);
+    return super.extracting(propertyOrField, ObjectAssert::new);
   }
 
   /**
@@ -878,7 +880,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @CheckReturnValue
   public <ASSERT extends AbstractAssert<?, ?>> ASSERT extracting(String propertyOrField,
                                                                  InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-    return super.extracting(propertyOrField, this::newObjectAssert).asInstanceOf(assertFactory);
+    return super.extracting(propertyOrField, ObjectAssert::new).asInstanceOf(assertFactory);
   }
 
   /**
@@ -914,7 +916,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   // in order to avoid compiler warning in user code
   protected AbstractListAssert<?, List<?>, Object, ObjectAssert<Object>> extractingForProxy(Function<? super ACTUAL, ?>[] extractors) {
     requireNonNull(extractors, shouldNotBeNull("extractors")::create);
-    List<Object> values = Stream.of(extractors)
+    final List<Object> values = Stream.of(extractors)
                                 .map(extractor -> extractor.apply(actual))
                                 .collect(toList());
     return newListAssertInstance(values).withAssertionState(myself);
@@ -951,7 +953,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
    */
   @CheckReturnValue
   public <T> AbstractObjectAssert<?, T> extracting(Function<? super ACTUAL, T> extractor) {
-    return super.extracting(extractor, this::newObjectAssert);
+    return super.extracting(extractor, ObjectAssert::new);
   }
 
   /**
@@ -989,7 +991,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @CheckReturnValue
   public <T, ASSERT extends AbstractAssert<?, ?>> ASSERT extracting(Function<? super ACTUAL, T> extractor,
                                                                     InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-    return super.extracting(extractor, this::newObjectAssert).asInstanceOf(assertFactory);
+    return super.extracting(extractor, ObjectAssert::new).asInstanceOf(assertFactory);
   }
 
   /**
@@ -1210,7 +1212,7 @@ public abstract class AbstractObjectAssert<SELF extends AbstractObjectAssert<SEL
   @Override
   SELF withAssertionState(AbstractAssert assertInstance) {
     if (assertInstance instanceof AbstractObjectAssert) {
-      AbstractObjectAssert objectAssert = (AbstractObjectAssert) assertInstance;
+      final AbstractObjectAssert objectAssert = (AbstractObjectAssert) assertInstance;
       return (SELF) super.withAssertionState(assertInstance).withTypeComparator(objectAssert.comparatorByType)
                                                             .withComparatorByPropertyOrField(objectAssert.comparatorByPropertyOrField);
     }
